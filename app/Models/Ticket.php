@@ -78,7 +78,9 @@ class Ticket extends Model
         parent::boot();
 
         static::creating(function ($ticket) {
-            $ticket->ticket_number = 'PDB-' . strtoupper(uniqid());
+            $date = now()->format('Ymd');
+            $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
+            $ticket->ticket_number = sprintf('%s-%03d', $date, $count);
         });
     }
 }
