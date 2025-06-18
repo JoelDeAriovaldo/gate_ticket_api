@@ -78,9 +78,14 @@ class Ticket extends Model
         parent::boot();
 
         static::creating(function ($ticket) {
-            $date = now()->format('Ymd');
-            $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
-            $ticket->ticket_number = sprintf('%s-%03d', $date, $count);
+            // Generate ticket number in format: YYYYMMDD-XXX
+            $date = now()->format('Ymd'); // Format: 20250618
+
+            // Count tickets created today (starting from 1)
+            $todayCount = self::whereDate('created_at', now()->toDateString())->count() + 1;
+
+            // Generate ticket number: 20250618-001, 20250618-002, etc.
+            $ticket->ticket_number = sprintf('%s-%03d', $date, $todayCount);
         });
     }
 }
